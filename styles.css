@@ -1,0 +1,226 @@
+/* Styles for Explain a Tweet extension */
+
+/* Explain button styling */
+.explain-tweet-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 16px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.explain-tweet-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.explain-tweet-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.explain-tweet-btn-container {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+/* Modal styling */
+.explain-tweet-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.explain-tweet-modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.explain-tweet-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e1e8ed;
+}
+
+.explain-tweet-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #14171a;
+}
+
+.explain-tweet-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #657786;
+  padding: 4px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.explain-tweet-modal-close:hover {
+  background-color: #f7f9fa;
+  color: #14171a;
+}
+
+.explain-tweet-modal-body {
+  padding: 20px 24px 24px;
+}
+
+.original-tweet,
+.explanation {
+  margin-bottom: 20px;
+}
+
+.original-tweet:last-child,
+.explanation:last-child {
+  margin-bottom: 0;
+}
+
+.original-tweet h4,
+.explanation h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.original-tweet h4 {
+  color: #657786;
+}
+
+.explanation h4 {
+  color: #667eea;
+}
+
+.original-tweet p,
+.explanation p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 16px;
+  color: #14171a;
+}
+
+.original-tweet p {
+  background: #f7f9fa;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #657786;
+  font-style: italic;
+}
+
+.explanation p {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f3f4ff 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #667eea;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .explain-tweet-modal-content {
+    background: #1e1e1e;
+    color: #ffffff;
+  }
+  
+  .explain-tweet-modal-header {
+    border-bottom-color: #333;
+  }
+  
+  .explain-tweet-modal-header h3 {
+    color: #ffffff;
+  }
+  
+  .explain-tweet-modal-close {
+    color: #8b98a5;
+  }
+  
+  .explain-tweet-modal-close:hover {
+    background-color: #333;
+    color: #ffffff;
+  }
+  
+  .original-tweet p {
+    background: #2d2d2d;
+    color: #ffffff;
+  }
+  
+  .explanation p {
+    background: #252838;
+    color: #ffffff;
+  }
+  
+  .original-tweet p,
+  .explanation p {
+    color: #ffffff;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .explain-tweet-modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .explain-tweet-modal-header,
+  .explain-tweet-modal-body {
+    padding: 16px 20px;
+  }
+  
+  .explain-tweet-modal-header h3 {
+    font-size: 18px;
+  }
+  
+  .original-tweet p,
+  .explanation p {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
