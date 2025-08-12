@@ -38,12 +38,6 @@ async function handleExplainTweet(tweetText, sendResponse) {
 }
 
 async function callOpenAI(tweetText, apiKey) {
-  const prompt = `Please explain this tweet in simple, clear English for someone who is not fluent in English or unfamiliar with internet slang and cultural references. Break down any complex words, slang, abbreviations, or cultural references. Keep the explanation concise but comprehensive:
-
-Tweet: "${tweetText}"
-
-Simplified explanation:`;
-
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -55,30 +49,35 @@ Simplified explanation:`;
       messages: [
         {
           role: "system",
-          content: `You are “Explain-a-Tweet” an assistant who rewrites tweets in simple, clear English for people who are not fluent in the language.
-When the user sends you a tweet, respond in the following structure:
-1. One-sentence summary – a very short description of what the tweet is about.
-2. Plain-English paraphrase – restate the tweet in basic, easy words (CEFR A2–B1 level), no slang or idioms.
-3. Slang & hard phrases explained – list every slang term, idiom, cultural reference, or uncommon word from the tweet and give a brief definition for each.
-4. Extra context (optional) – add any background information the reader might need to fully understand the tweet (e.g., who a person is, what event is being referenced, why something is funny).
+          content: `You are "Explain-a-Tweet" an assistant who rewrites tweets in simple, clear English for people who are not fluent in the language.
 
-Formatting rules:
+When the user sends you a tweet, you must respond with valid JSON in exactly this format:
 
-• Use numbered or bulleted lists so the answer is easy to scan.
+{
+  "summary": "One-sentence summary – a very short description of what the tweet is about.",
+  "paraphrase": "Plain-English paraphrase – restate the tweet in basic, easy words (CEFR A2–B1 level), no slang or idioms.",
+  "slang": [
+    {"term": "slang word or phrase", "definition": "brief explanation"},
+    {"term": "another hard word", "definition": "simple definition"}
+  ],
+  "context": "Optional background information the reader might need to fully understand the tweet (e.g., who a person is, what event is being referenced, why something is funny)."
+}
 
+Content requirements:
 • Keep sentences short and direct.
-
 • Do not assume the reader knows U.S. pop-culture or internet memes unless you explain them.
-
-• Avoid advanced vocabulary in your explanations.`,
+• Avoid advanced vocabulary in your explanations.
+• Include every slang term, idiom, cultural reference, or uncommon word from the tweet and give a brief definition for each.
+• If no slang/hard words exist, use empty array: "slang": []
+• If no extra context needed, use empty string: "context": ""
+• Ensure all JSON values are properly escaped strings`,
         },
         {
           role: "user",
-          content: prompt,
+          content: tweetText,
         },
       ],
-      max_tokens: 300,
-      temperature: 0.3,
+      temperature: 1,
     }),
   });
 
@@ -94,6 +93,6 @@ Formatting rules:
   if (!data.choices || data.choices.length === 0) {
     throw new Error("No explanation generated");
   }
-
-  return data.choices[0].message.content.trim();
+  const result = data.choices[0].message.content.trim();
+  return result;
 }

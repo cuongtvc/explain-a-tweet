@@ -1,13 +1,13 @@
 // Content script to inject explain buttons on X.com tweets
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   // Create explain button
   function createExplainButton() {
-    const button = document.createElement('button');
-    button.className = 'explain-tweet-btn';
-    button.innerHTML = '🧠 Explain';
-    button.title = 'Explain this tweet in simple English';
+    const button = document.createElement("button");
+    button.className = "explain-tweet-btn";
+    button.innerHTML = "🧠 Explain";
+    button.title = "Explain this tweet in simple English";
     return button;
   }
 
@@ -16,8 +16,8 @@
     // Try different selectors for tweet text
     const textSelectors = [
       '[data-testid="tweetText"]',
-      '[lang]',
-      '.css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0'
+      "[lang]",
+      ".css-901oao.css-16my406.r-poiln3.r-bcqeeo.r-qvutc0",
     ];
 
     for (const selector of textSelectors) {
@@ -37,41 +37,127 @@
 
     const button = event.target;
     const originalText = button.textContent;
-    
+
     // Show loading state
-    button.textContent = 'Explaining...';
+    button.textContent = "Explaining...";
     button.disabled = true;
 
     // Send message to background script to get explanation
-    chrome.runtime.sendMessage({
-      action: 'explainTweet',
-      tweetText: tweetText
-    }, (response) => {
-      // Reset button state
-      button.textContent = originalText;
-      button.disabled = false;
+    chrome.runtime.sendMessage(
+      {
+        action: "explainTweet",
+        tweetText: tweetText,
+      },
+      (response) => {
+        // Reset button state
+        button.textContent = originalText;
+        button.disabled = false;
 
-      if (response && response.success) {
-        showExplanation(tweetText, response.explanation);
-      } else {
-        alert('Error: ' + (response?.error || 'Failed to explain tweet'));
+        if (response && response.success) {
+          showExplanation(tweetText, response.explanation);
+        } else {
+          alert("Error: " + (response?.error || "Failed to explain tweet"));
+        }
       }
-    });
+    );
+  }
+
+  // Escape HTML to prevent XSS
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Parse JSON explanation from AI response
+  function parseExplanation(explanation) {
+    try {
+      // Try to parse as JSON
+      const data = JSON.parse(explanation);
+
+      // Build formatted HTML from JSON structure
+      let html = "";
+
+      if (data.summary && data.summary.trim()) {
+        html += `
+          <div class="explanation-section summary">
+            <h4>📝 Summary</h4>
+            <p>${escapeHtml(data.summary.trim())}</p>
+          </div>
+        `;
+      }
+
+      if (data.paraphrase && data.paraphrase.trim()) {
+        html += `
+          <div class="explanation-section paraphrase">
+            <h4>💬 In Simple English</h4>
+            <p>${escapeHtml(data.paraphrase.trim())}</p>
+          </div>
+        `;
+      }
+
+      if (data.slang && Array.isArray(data.slang) && data.slang.length > 0) {
+        const slangList = data.slang
+          .map(
+            (item) =>
+              `<li><strong>${escapeHtml(item.term)}:</strong> ${escapeHtml(
+                item.definition
+              )}</li>`
+          )
+          .join("");
+        html += `
+          <div class="explanation-section slang">
+            <h4>🔤 Slang & Hard Words</h4>
+            <ul>${slangList}</ul>
+          </div>
+        `;
+      }
+
+      if (data.context && data.context.trim()) {
+        html += `
+          <div class="explanation-section context">
+            <h4>ℹ️ Extra Context</h4>
+            <p>${escapeHtml(data.context.trim())}</p>
+          </div>
+        `;
+      }
+
+      // Return formatted HTML if we have content
+      if (html) {
+        return html;
+      }
+    } catch (error) {
+      console.warn(
+        "Failed to parse JSON explanation, falling back to text:",
+        error
+      );
+    }
+
+    // Fallback for non-JSON responses or parsing errors
+    return `
+      <div class="explanation-section paraphrase">
+        <h4>💬 Simplified</h4>
+        <p>${escapeHtml(explanation)}</p>
+      </div>
+    `;
   }
 
   // Show explanation in modal
   function showExplanation(originalText, explanation) {
     // Remove existing modal if any
-    const existingModal = document.getElementById('explain-tweet-modal');
+    const existingModal = document.getElementById("explain-tweet-modal");
     if (existingModal) {
       existingModal.remove();
     }
 
+    // Parse structured explanation
+    const formattedExplanation = parseExplanation(explanation);
+
     // Create modal
-    const modal = document.createElement('div');
-    modal.id = 'explain-tweet-modal';
-    modal.className = 'explain-tweet-modal';
-    
+    const modal = document.createElement("div");
+    modal.id = "explain-tweet-modal";
+    modal.className = "explain-tweet-modal";
+
     modal.innerHTML = `
       <div class="explain-tweet-modal-content">
         <div class="explain-tweet-modal-header">
@@ -80,13 +166,10 @@
         </div>
         <div class="explain-tweet-modal-body">
           <div class="original-tweet">
-            <h4>Original:</h4>
-            <p>${originalText}</p>
+            <h4>Original Tweet:</h4>
+            <p>${escapeHtml(originalText)}</p>
           </div>
-          <div class="explanation">
-            <h4>Simplified:</h4>
-            <p>${explanation}</p>
-          </div>
+          ${formattedExplanation}
         </div>
       </div>
     `;
@@ -94,19 +177,18 @@
     document.body.appendChild(modal);
 
     // Close modal handlers
-    const closeBtn = modal.querySelector('.explain-tweet-modal-close');
-    const modalContent = modal.querySelector('.explain-tweet-modal-content');
+    const closeBtn = modal.querySelector(".explain-tweet-modal-close");
 
-    closeBtn.addEventListener('click', () => modal.remove());
-    modal.addEventListener('click', (e) => {
+    closeBtn.addEventListener("click", () => modal.remove());
+    modal.addEventListener("click", (e) => {
       if (e.target === modal) modal.remove();
     });
 
     // Close on escape key
-    document.addEventListener('keydown', function escHandler(e) {
-      if (e.key === 'Escape') {
+    document.addEventListener("keydown", function escHandler(e) {
+      if (e.key === "Escape") {
         modal.remove();
-        document.removeEventListener('keydown', escHandler);
+        document.removeEventListener("keydown", escHandler);
       }
     });
   }
@@ -114,7 +196,7 @@
   // Add explain button to tweet
   function addExplainButtonToTweet(tweetElement) {
     // Check if button already exists
-    if (tweetElement.querySelector('.explain-tweet-btn')) {
+    if (tweetElement.querySelector(".explain-tweet-btn")) {
       return;
     }
 
@@ -130,13 +212,15 @@
     }
 
     const explainBtn = createExplainButton();
-    explainBtn.addEventListener('click', (e) => handleExplainClick(e, tweetText));
+    explainBtn.addEventListener("click", (e) =>
+      handleExplainClick(e, tweetText)
+    );
 
     // Add button to action buttons
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'explain-tweet-btn-container';
+    const buttonContainer = document.createElement("div");
+    buttonContainer.className = "explain-tweet-btn-container";
     buttonContainer.appendChild(explainBtn);
-    
+
     actionButtons.appendChild(buttonContainer);
   }
 
@@ -145,7 +229,7 @@
     // X.com tweet selectors
     const tweetSelectors = [
       '[data-testid="tweet"]',
-      'article[data-testid="tweet"]'
+      'article[data-testid="tweet"]',
     ];
 
     for (const selector of tweetSelectors) {
@@ -167,7 +251,7 @@
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
   }
 
@@ -175,14 +259,14 @@
   function initialize() {
     // Process existing tweets
     processTweets();
-    
+
     // Watch for new tweets
     initializeObserver();
   }
 
   // Start when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize);
   } else {
     initialize();
   }

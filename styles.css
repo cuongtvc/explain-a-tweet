@@ -113,34 +113,37 @@
 }
 
 .original-tweet,
-.explanation {
+.explanation-section {
   margin-bottom: 20px;
 }
 
 .original-tweet:last-child,
-.explanation:last-child {
+.explanation-section:last-child {
   margin-bottom: 0;
 }
 
 .original-tweet h4,
-.explanation h4 {
+.explanation-section h4 {
   margin: 0 0 8px 0;
   font-size: 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .original-tweet h4 {
   color: #657786;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.explanation h4 {
+.explanation-section h4 {
   color: #667eea;
 }
 
 .original-tweet p,
-.explanation p {
+.explanation-section p {
   margin: 0;
   line-height: 1.5;
   font-size: 16px;
@@ -155,11 +158,47 @@
   font-style: italic;
 }
 
-.explanation p {
+.explanation-section.summary {
+  background: linear-gradient(135deg, #fff7e6 0%, #fff2d9 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #ff9500;
+}
+
+.explanation-section.paraphrase {
   background: linear-gradient(135deg, #f8f9ff 0%, #f3f4ff 100%);
   padding: 16px;
   border-radius: 12px;
   border-left: 4px solid #667eea;
+}
+
+.explanation-section.slang {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #0ea5e9;
+}
+
+.explanation-section.context {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e6ffef 100%);
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid #22c55e;
+}
+
+.explanation-section ul {
+  margin: 0;
+  padding-left: 20px;
+  color: #14171a;
+}
+
+.explanation-section li {
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.explanation-section li:last-child {
+  margin-bottom: 0;
 }
 
 /* Dark mode support */
@@ -191,13 +230,26 @@
     color: #ffffff;
   }
   
-  .explanation p {
+  .explanation-section.summary {
+    background: #2a2418;
+  }
+  
+  .explanation-section.paraphrase {
     background: #252838;
-    color: #ffffff;
+  }
+  
+  .explanation-section.slang {
+    background: #1a2730;
+  }
+  
+  .explanation-section.context {
+    background: #1f2920;
   }
   
   .original-tweet p,
-  .explanation p {
+  .explanation-section p,
+  .explanation-section ul,
+  .explanation-section li {
     color: #ffffff;
   }
 }
@@ -219,8 +271,12 @@
   }
   
   .original-tweet p,
-  .explanation p {
+  .explanation-section {
     font-size: 15px;
     padding: 12px;
+  }
+  
+  .explanation-section h4 {
+    font-size: 13px;
   }
 }
