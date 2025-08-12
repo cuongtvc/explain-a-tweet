@@ -26,7 +26,7 @@ A Chrome extension that simplifies complex tweets into clear, easy-to-understand
 1. Click the extension icon in your Chrome toolbar
 2. Enter your OpenAI API key (starts with `sk-`)
 3. Click "Save Settings"
-4. Visit [X.com](https://x.com) or [Twitter.com](https://twitter.com)
+4. Visit [X.com](https://x.com)
 5. Look for the purple "🧠 Explain" buttons on tweets
 
 ## How to Use
@@ -60,8 +60,7 @@ A Chrome extension that simplifies complex tweets into clear, easy-to-understand
 
 ## API Costs
 
-- Uses OpenAI GPT-3.5-turbo model
-- Approximately $0.002 per explanation (very low cost)
+- Uses OpenAI gpt-5-nano model (very low cost)
 - You only pay for what you use through your OpenAI account
 
 ## Files Structure
@@ -82,7 +81,7 @@ explain-a-tweet/
 This extension uses:
 - **Manifest V3** (latest Chrome extension standard)
 - **Vanilla JavaScript** (no frameworks)
-- **OpenAI GPT-3.5-turbo API** for explanations
+- **OpenAI GPT-5-nano API** for explanations
 - **Chrome Storage API** for settings persistence
 
 ## Troubleshooting
@@ -101,6 +100,10 @@ This extension uses:
 - Verify your API key is correct and has credits
 - Check your OpenAI account billing status
 - Try again in a few seconds (rate limiting)
+
+## Author
+
+Created by [@cuongtvc](https://x.com/cuongtvc) 
 
 ## License
 
