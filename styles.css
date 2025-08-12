@@ -1,8 +1,8 @@
 /* Styles for Explain a Tweet extension */
 
-/* Explain button styling */
-.explain-tweet-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Button styling */
+.explain-tweet-btn,
+.reply-tweet-btn {
   border: none;
   border-radius: 16px;
   color: white;
@@ -17,21 +17,37 @@
   white-space: nowrap;
 }
 
+.explain-tweet-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.reply-tweet-btn {
+  background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%);
+}
+
 .explain-tweet-btn:hover:not(:disabled) {
   background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
 
-.explain-tweet-btn:disabled {
+.reply-tweet-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4db8e8 0%, #2968d4 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(86, 204, 242, 0.3);
+}
+
+.explain-tweet-btn:disabled,
+.reply-tweet-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
 }
 
-.explain-tweet-btn-container {
+.tweet-extension-btns-container {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   margin-left: 8px;
 }
 
@@ -278,5 +294,154 @@
   
   .explanation-section h4 {
     font-size: 13px;
+  }
+}
+
+/* Reply suggestions styling */
+.reply-suggestions-container {
+  margin-top: 16px;
+}
+
+.thread-context-indicator {
+  background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%);
+  border: 1px solid #81d4fa;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0277bd;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reply-suggestion {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.reply-suggestion:last-child {
+  margin-bottom: 0;
+}
+
+.reply-suggestion h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reply-suggestion:nth-child(1) {
+  background: linear-gradient(135deg, #fff7e6 0%, #fff2d9 100%);
+  border-left: 4px solid #ff9500;
+}
+
+.reply-suggestion:nth-child(1) h4 {
+  color: #ff9500;
+}
+
+.reply-suggestion:nth-child(2) {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-left: 4px solid #0ea5e9;
+}
+
+.reply-suggestion:nth-child(2) h4 {
+  color: #0ea5e9;
+}
+
+.reply-suggestion:nth-child(3) {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e6ffef 100%);
+  border-left: 4px solid #22c55e;
+}
+
+.reply-suggestion:nth-child(3) h4 {
+  color: #22c55e;
+}
+
+.reply-text {
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+  font-size: 16px;
+  color: #14171a;
+}
+
+.copy-reply-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.copy-reply-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.copy-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #22c55e;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 10001;
+  animation: toastSlideIn 0.3s ease-out;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Dark mode support for reply suggestions */
+@media (prefers-color-scheme: dark) {
+  .thread-context-indicator {
+    background: #1a2730;
+    border-color: #2563eb;
+    color: #60a5fa;
+  }
+  
+  .reply-suggestion:nth-child(1) {
+    background: #2a2418;
+  }
+  
+  .reply-suggestion:nth-child(2) {
+    background: #1a2730;
+  }
+  
+  .reply-suggestion:nth-child(3) {
+    background: #1f2920;
+  }
+  
+  .reply-text {
+    color: #ffffff;
+  }
+  
+  .copy-toast {
+    background: #1f2920;
+    color: #ffffff;
   }
 }
