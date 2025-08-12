@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const saveBtn = document.getElementById('saveBtn');
   const statusDiv = document.getElementById('status');
 
-  // Load saved API key
+  // Check if API key exists (but don't display it)
   chrome.storage.local.get(['openaiApiKey'], function(result) {
     if (result.openaiApiKey) {
-      apiKeyInput.value = result.openaiApiKey;
+      apiKeyInput.placeholder = 'API key already saved (enter new key to update)';
+    } else {
+      apiKeyInput.placeholder = 'Enter your OpenAI API key';
     }
   });
 
